@@ -7,17 +7,17 @@ ENV VERSION=1.5.6 \
 
 RUN set -ex \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && yum -y install wget gcc epel-release git yum-utils \
-    && yum -y install python36 python36-devel \
-    && yum -y localinstall --nogpgcheck https://mirrors.aliyun.com/rpmfusion/free/el/rpmfusion-free-release-7.noarch.rpm https://mirrors.aliyun.com/rpmfusion/nonfree/el/rpmfusion-nonfree-release-7.noarch.rpm \
-    && yum install -y java-1.8.0-openjdk libtool \
+    && yum -y --nogpgcheck install wget gcc epel-release git yum-utils \
+    && yum -y --nogpgcheck install python36 python36-devel \
+    && yum -y --nogpgcheck localinstall --nogpgcheck https://mirrors.aliyun.com/rpmfusion/free/el/rpmfusion-free-release-7.noarch.rpm https://mirrors.aliyun.com/rpmfusion/nonfree/el/rpmfusion-nonfree-release-7.noarch.rpm \
+    && yum install -y --nogpgcheck java-1.8.0-openjdk libtool \
     && mkdir /usr/local/lib/freerdp/ \
     && ln -s /usr/local/lib/freerdp /usr/lib64/freerdp \
-    && yum install -y cairo-devel libjpeg-turbo-devel libpng-devel uuid-devel \
-    && yum install -y ffmpeg-devel freerdp1.2-devel libvncserver-devel pulseaudio-libs-devel openssl-devel libvorbis-devel libwebp-devel \
+    && yum install -y --nogpgcheck cairo-devel libjpeg-turbo-devel libpng-devel uuid-devel \
+    && yum install -y --nogpgcheck ffmpeg-devel freerdp1.2-devel libvncserver-devel pulseaudio-libs-devel openssl-devel libvorbis-devel libwebp-devel \
     && echo -e "[nginx-stable]\nname=nginx stable repo\nbaseurl=http://nginx.org/packages/centos/\$releasever/\$basearch/\ngpgcheck=1\nenabled=1\ngpgkey=https://nginx.org/keys/nginx_signing.key" > /etc/yum.repos.d/nginx.repo \
     && rpm --import https://nginx.org/keys/nginx_signing.key \
-    && yum -y install mariadb mariadb-devel mariadb-server redis nginx \
+    && yum -y --nogpgcheck install mariadb mariadb-devel mariadb-server redis nginx \
     && rm -rf /etc/nginx/conf.d/default.conf \
     && mkdir -p /config/guacamole /config/guacamole/lib /config/guacamole/extensions /config/guacamole/record /config/guacamole/drive \
     && chown daemon:daemon /config/guacamole/record /config/guacamole/drive \
@@ -35,16 +35,20 @@ RUN set -ex \
     && rm -rf /var/cache/yum/*
 
 RUN set -ex \
-    && git clone --depth=1 https://github.com/jumpserver/jumpserver.git \
-    && git clone --depth=1 https://github.com/jumpserver/docker-guacamole.git \
-    && wget https://github.com/jumpserver/koko/releases/download/${VERSION}/koko-master-linux-amd64.tar.gz \
+    && wget http://134.175.107.119/download/jumpserver/1.5.6/jumpserver.tar.gz \
+    && tar xf jumpserver.tar.gz \
+    && #curl http://192.168.239.241/jm/jmth.sh -o /opt/jmth.sh \
+    && wget http://134.175.107.119/download/guacamole/1.5.6/guacamole.tar.gz \
+    && tar xf guacamole.tar.gz \
+    && wget http://134.175.107.119/download/koko/1.5.6/koko-master-linux-amd64.tar.gz \
     && tar xf koko-master-linux-amd64.tar.gz \
     && mv kokodir koko \
     && chown -R root:root koko \
-    && wget https://github.com/jumpserver/luna/releases/download/${VERSION}/luna.tar.gz \
+    && wget http://134.175.107.119/download/luna/1.5.6/luna.tar.gz \
     && tar xf luna.tar.gz \
     && chown -R root:root luna \
-    && yum -y install $(cat /opt/jumpserver/requirements/rpm_requirements.txt) \
+    && #sh /opt/jmth.sh \
+    && yum -y --nogpgcheck install $(cat /opt/jumpserver/requirements/rpm_requirements.txt) \
     && python3.6 -m venv /opt/py3 \
     && echo -e "[easy_install]\nindex_url = https://mirrors.aliyun.com/pypi/simple/" > ~/.pydistutils.cfg \
     && source /opt/py3/bin/activate \
