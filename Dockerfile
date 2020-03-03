@@ -37,7 +37,6 @@ RUN set -ex \
 RUN set -ex \
     && wget http://134.175.107.119/download/jumpserver/1.5.6/jumpserver.tar.gz \
     && tar xf jumpserver.tar.gz \
-    && #curl http://192.168.239.241/jm/jmth.sh -o /opt/jmth.sh \
     && wget http://134.175.107.119/download/guacamole/1.5.6/guacamole.tar.gz \
     && tar xf guacamole.tar.gz \
     && wget http://134.175.107.119/download/koko/1.5.6/koko-master-linux-amd64.tar.gz \
@@ -47,7 +46,6 @@ RUN set -ex \
     && wget http://134.175.107.119/download/luna/1.5.6/luna.tar.gz \
     && tar xf luna.tar.gz \
     && chown -R root:root luna \
-    && #sh /opt/jmth.sh \
     && yum -y --nogpgcheck install $(cat /opt/jumpserver/requirements/rpm_requirements.txt) \
     && python3.6 -m venv /opt/py3 \
     && echo -e "[easy_install]\nindex_url = https://mirrors.aliyun.com/pypi/simple/" > ~/.pydistutils.cfg \
