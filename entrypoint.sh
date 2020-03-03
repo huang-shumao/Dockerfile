@@ -19,6 +19,8 @@ if [ $REDIS_HOST == 127.0.0.1 ]; then
     redis-server &
 fi
 
+rm -rf /opt/jumpserver/config.yml
+
 if [ ! -f "/opt/jumpserver/config.yml" ]; then
     cp /opt/jumpserver/config_example.yml /opt/jumpserver/config.yml
     sed -i "s/SECRET_KEY:/SECRET_KEY: $SECRET_KEY/g" /opt/jumpserver/config.yml
@@ -38,6 +40,9 @@ if [ ! -f "/opt/jumpserver/config.yml" ]; then
     sed -i "s/# WINDOWS_SKIP_ALL_MANUAL_PASSWORD: False/WINDOWS_SKIP_ALL_MANUAL_PASSWORD: True/g" /opt/jumpserver/config.yml
 fi
 
+rm -rf /opt/kokodir/keys/*
+rm -rf /opt/koko/config.yml
+
 if [ ! -f "/opt/koko/config.yml" ]; then
     cp /opt/koko/config_example.yml /opt/koko/config.yml
     sed -i "s/BOOTSTRAP_TOKEN: <PleasgeChangeSameWithJumpserver>/BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN/g" /opt/koko/config.yml
@@ -47,8 +52,16 @@ fi
 
 source /opt/py3/bin/activate
 cd /opt/jumpserver && ./jms start -d
+
+rm -rf /opt/logs/*
 cd /opt/koko && ./koko -d
+
+rm -rf /config/guacamole/keys/*
+rm -rf /config/guacamole/record
+
 /etc/init.d/guacd start
+
+rm -rf /config/tomcat9/logs/*
 sh /config/tomcat9/bin/startup.sh
 /usr/sbin/nginx &
 tail -f /opt/readme.txt
